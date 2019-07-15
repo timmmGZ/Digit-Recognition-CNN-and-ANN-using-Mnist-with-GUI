@@ -14,13 +14,8 @@ This program is based on Single layer Neural Network with 10 neurons in both ANN
 Random try--training only 10+ seconds(3-5 epoches), test set 92.61%, train set 93.06% (without using back propagation and keep best weights)
 ![image](https://raw.githubusercontent.com/timmmGZ/Digit-Recognition-CNN-and-ANN-using-Mnist-with-GUI/master/images/ANN3and5epochAccuracy.png)
 # CNN accuray
-(All tries use 16 random designed filters and without using back propagation and keep best weights)  
-Random try--training only 3 seconds(1 epoch), test set 96.14%, train set 96.28%    
-![image](https://raw.githubusercontent.com/timmmGZ/Digit-Recognition-CNN-and-ANN-using-Mnist-with-GUI/master/images/CNN1epochAccuracy.png)
-Random try--training 15mins (around 300+ epoches) test set 97.49%, train set 98.99%     
-![image](https://github.com/timmmGZ/Digit-Recognition-CNN-and-ANN-using-Mnist-with-GUI/blob/master/images/CNN98%2599%25.png)
-Better try--training 1.5h (2000 epoches, I just left it training there with the same learning rate, if I kept modifing the rate, it should be less than 1000 epoches, as you see 3 epoches with smaller rate after training 2000 epoches, accuracy increases) test set 97.28%, train set 99.27%, train set accuracy could be higher as long as you accept the sacrifice of lower accuracy in test set(overfitting due to MNIST has around 0.5% error)
-![image](https://raw.githubusercontent.com/timmmGZ/Digit-Recognition-CNN-and-ANN-using-Mnist-with-GUI/master/images/overfit.png)
+Training with 16 random designed filters without using back propagation and keep best weights, around 35 epoches is enough to reach 99% acc for train set, to reach 100%, I randomly try like below gif
+![image](https://github.com/timmmGZ/Digit-Recognition-CNN-and-ANN-using-Mnist-with-GUI/blob/master/imagesUpdated/MnistCNN100Acc.gif)
 # The changing of weights 
 Following picture describe how weights change when it has only 2,5,10,20,30.....50 data sets respectively to be trained  
 Blue=positive, White=0, Red=negative, you could realize how weights work especially obviously in the 4th row and 2nd column example when the dataset only includes number "1" and "4", you could also see the difference between ANN and CNNs' weights in the last row's example 
