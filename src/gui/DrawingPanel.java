@@ -1,28 +1,39 @@
 package gui;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
+import neuralNetwork.Convolution;
 import neuralNetwork.DataSet;
 import tool.DataInfo;
 
-public class DrawingPanel extends JPanel {
+public class DrawingPanel extends JPanel implements MouseMotionListener, MouseListener {
 
 	private static final long serialVersionUID = 2699483160369518329L;
 	public int pixelW = 13, pixelH = 13, resolution = 28;
-	protected int[][] map;
+	protected double[][] map, mapDrawing = new double[28][28];
 	public ConvolutionPanel convPanel;
+	MainFrame mainFrame;
+	Convolution conv = new Convolution();
 
-	public DrawingPanel(ConvolutionPanel cP) throws IOException {
+	public DrawingPanel(ConvolutionPanel cP, MainFrame m) throws IOException {
 		super();
-		map = new int[resolution][resolution];
+		map = new double[resolution][resolution];
 		convPanel = cP;
 		setPreferredSize(new Dimension(364, 364));
 		setBackground(Color.WHITE);
+		addMouseMotionListener(this);
+		addMouseListener(this);
+		mainFrame = m;
 	}
 
 	@Override
@@ -30,7 +41,7 @@ public class DrawingPanel extends JPanel {
 		super.paintComponent(g);
 		for (int y = 0; y < resolution; y++)
 			for (int x = 0; x < resolution; x++) {
-				int grey = 255 - map[y][x];
+				int grey = 255 - (int) (map[y][x] * 255);
 				g.setColor(new Color(grey, grey, grey));
 				g.fillRect(x * pixelW, y * pixelH, pixelW, pixelH);
 			}
@@ -57,6 +68,63 @@ public class DrawingPanel extends JPanel {
 		convPanel.setCurrentWordsConvDrawing(random);
 		repaint();
 		return random;
+	}
+
+	private void setPixel(MouseEvent e) {
+		try {
+			mapDrawing[e.getY() / pixelH][e.getX() / pixelW] = SwingUtilities.isLeftMouseButton(e) ? 0.8 : 0;
+			double[][] a = conv.createDrawing(mapDrawing);
+			for (int y = 0; y < map.length; y++)
+				for (int x = 0; x < map[0].length; x++)
+					a[y][x] = 1 / (1 + Math.exp(-a[y][x] * 100) * 255);
+			map = a;
+			convPanel.setCurrentWordsConvDrawing(new DataSet(map, conv));
+			repaint();
+			mainFrame.trainer.network.setAllNeuronsInputs(convPanel.getVector());
+			List<Double> outputs = mainFrame.trainer.network.getOutputs();
+			mainFrame.probPanel.updateProbs(outputs);
+			String prediction = mainFrame.info.getTrainWordNames().get(outputs.indexOf(Collections.max(outputs)));
+			mainFrame.predict.setText("Prediction: " + prediction);
+			mainFrame.accuracy.setText("Prediction of your drawing doesn't have true label");
+		} catch (Exception exc) {
+		}
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		setPixel(e);
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		setPixel(e);
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+	}
+
+	public void clear() {
+		map = new double[28][28];
+		mapDrawing = new double[28][28];
+		repaint();
+		convPanel.setCurrentWordsConvDrawing(new DataSet(map, conv));
 	}
 
 }

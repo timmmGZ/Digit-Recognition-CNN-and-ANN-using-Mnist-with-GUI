@@ -20,7 +20,7 @@ public class ReadFile {
 		for (Scanner s = new Scanner(new FileInputStream(new File("dataset/" + filename))); s.hasNextLine();) {
 			String[] line = s.nextLine().split(",");
 			String word = String.valueOf(line[0]);
-			int[][] trainSetInputs = new int[28][28];
+			double[][] trainSetInputs = new double[28][28];
 			for (int y = 0; y < 28; y++)
 				for (int x = 0; x < 28; x++)
 					trainSetInputs[y][x] = Integer.parseInt(line[y * 28 + x + 1]);
@@ -38,10 +38,10 @@ public class ReadFile {
 		for (Scanner s = new Scanner(new FileInputStream(new File("dataset/" + filename))); s.hasNextLine();) {
 			String[] line = s.nextLine().split("\\|");
 			String word = String.valueOf(line[line.length - 1]);
-			int[][] trainSetInputs = new int[28][28];
+			double[][] trainSetInputs = new double[28][28];
 			for (int y = 0; y < 28; y++)
 				for (int x = 0; x < 28; x++)
-					trainSetInputs[x][y] = Integer.parseInt(line[y * 28 + x]);
+					trainSetInputs[x][y] = Integer.parseInt(line[y * 28 + x]) / 255.0;
 			trainingSets.add(new DataSet(trainSetInputs, DataInfo.getTrueOutput(word), word, conv));
 			i++;
 		}

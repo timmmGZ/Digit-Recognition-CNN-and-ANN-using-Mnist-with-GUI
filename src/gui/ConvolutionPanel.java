@@ -16,9 +16,9 @@ public class ConvolutionPanel extends JPanel {
 
 	private static final long serialVersionUID = 8845424871025504943L;
 	public int pixelW = 5, pixelH = 5;
-	public List<Integer> vector;
-	public int[][] firstLayerFeatureMapsSum;
-	public List<int[][]> firstLayerFeaturesVector, secondLayerFeaturesVector;
+	public List<Double> vector;
+	public double[][] firstLayerFeatureMapsSum;
+	public List<double[][]> firstLayerFeaturesVector, secondLayerFeaturesVector;
 	public Convolution conv = new Convolution();
 	public boolean showLines = true, useCNN = false, showWeights = false;
 	public List<Neuron> neurons;
@@ -99,7 +99,7 @@ public class ConvolutionPanel extends JPanel {
 	public void drawFirstLayerFeatureMaps(Graphics g) {
 		for (int y = 0; y < 112; y++)
 			for (int x = 0; x < 28; x++) {
-				int grey = colorValue(firstLayerFeaturesVector.get(y / 14 * 2 + x / 14)[y % 14][x % 14] / 60, 1);
+				int grey = colorValue(firstLayerFeaturesVector.get(y / 14 * 2 + x / 14)[y % 14][x % 14] * 5, 1);
 				g.setColor(new Color(grey, grey, grey));
 				g.fillRect(300 + 5 * (x / 14) + x * pixelW, 30 + 5 * (y / 14) + y * pixelH, pixelW, pixelH);
 			}
@@ -108,7 +108,7 @@ public class ConvolutionPanel extends JPanel {
 	public void drawSecondLayerFeatureMaps(Graphics g) {
 		for (int y = 0; y < 56; y++)
 			for (int x = 0; x < 14; x++) {
-				int grey = colorValue(secondLayerFeaturesVector.get(y / 7 * 2 + x / 7)[y % 7][x % 7] / 530, 1);
+				int grey = colorValue(secondLayerFeaturesVector.get(y / 7 * 2 + x / 7)[y % 7][x % 7] * 20, 1);
 				g.setColor(new Color(grey, grey, grey));
 				g.fillRect(630 + 40 * (x / 7) + x * pixelW, 48 + 40 * (y / 7) + y * pixelH, pixelW, pixelH);
 				g.setColor(Color.GREEN);
@@ -121,7 +121,7 @@ public class ConvolutionPanel extends JPanel {
 	public void drawFirstLayerFeatureMapsSum(Graphics g) {
 		for (int y = 0; y < firstLayerFeatureMapsSum.length; y++)
 			for (int x = 0; x < firstLayerFeatureMapsSum.length; x++) {
-				int grey = colorValue(firstLayerFeatureMapsSum[y][x] / 1000, 1);
+				int grey = colorValue(firstLayerFeatureMapsSum[y][x] * 20, 1);
 				g.setColor(new Color(grey, grey, grey));
 				g.fillRect(500 + 5 * (x / 14) + x * pixelW, 295 + 5 * (y / 14) + y * pixelH, pixelW, pixelH);
 			}
@@ -129,7 +129,7 @@ public class ConvolutionPanel extends JPanel {
 
 	public void drawFeatureVector(Graphics g) {
 		for (int i = 0; i < vector.size(); i++) {
-			int grey = colorValue(vector.get(i) / 1000, 1);
+			int grey = colorValue(vector.get(i) * 20, 1);
 			g.setColor(new Color(grey, grey, grey));
 			g.fillRect(800 + pixelW, i * pixelH, 5, 5);
 		}
@@ -141,12 +141,11 @@ public class ConvolutionPanel extends JPanel {
 		repaint();
 	}
 
-	private int colorValue(double w, int type) {
-		return (int) (type == 0 ? 255 / Math.pow(Math.exp(w * w / (useCNN ? 168000000 : 1000000)), 1.8)
-				: 255 - 255 / (1 + Math.exp(-w)));
+	public int colorValue(double w, int type) {
+		return (int) (type == 0 ? 255 / Math.exp(w * w * (useCNN ? 0.01 : 100)) : 255 - 255 / (1 + Math.exp(-w)));
 	}
 
-	public List<Integer> getVector() {
+	public List<Double> getVector() {
 		return vector;
 	}
 }

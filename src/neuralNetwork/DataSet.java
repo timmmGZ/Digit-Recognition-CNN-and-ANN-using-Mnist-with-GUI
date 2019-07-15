@@ -7,12 +7,12 @@ import java.util.stream.Collectors;
 
 public class DataSet {
 
-	private int[][] inputsAsMatrix;
-	private List<Integer> featureVector, inputVector;
+	private double[][] inputsAsMatrix;
+	private List<Double> featureVector, inputVector;
 	private List<Integer> trueOuput;
 	private String label;
 
-	public DataSet(int[][] in, List<Integer> out, String word, Convolution convolution) {
+	public DataSet(double[][] in, List<Integer> out, String word, Convolution convolution) {
 		inputsAsMatrix = in;
 		trueOuput = out;
 		label = word;
@@ -23,15 +23,24 @@ public class DataSet {
 		// adjustToCentroid();
 	}
 
-	public int[][] getInputs() {
+	public DataSet(double[][] in, Convolution convolution) {
+		inputsAsMatrix = in;
+		convolution.setupAllLayers(inputsAsMatrix);
+		featureVector = convolution.getFeatureVector();
+		inputVector = Arrays.stream(inputsAsMatrix).map(Arrays::stream).map(e -> e.boxed()).flatMap(s -> s)
+				.collect(Collectors.toList());
+		// adjustToCentroid();
+	}
+
+	public double[][] getInputs() {
 		return inputsAsMatrix;
 	}
 
-	public List<Integer> getInputsVector() {
+	public List<Double> getInputsVector() {
 		return inputVector;
 	}// map ->List<int[]> ->List<IntStream> ->List<Stream<Integer>> ->Stream<Integer>
 
-	public List<Integer> getFeatureVector() {
+	public List<Double> getFeatureVector() {
 		return featureVector;
 	}
 
@@ -51,7 +60,7 @@ public class DataSet {
 				}
 		cx = (int) (14 - (rx - lx + 1) / 2.0 - lx);
 		cy = (int) (14 - (downy - upy + 1) / 2.0 - upy);
-		List<Integer> newInput = new ArrayList<>();
+		List<Double> newInput = new ArrayList<>();
 		if (cx != 0 || cy != 0) {
 			System.out.println(label + ":" + cx + "," + cy);
 			for (int y = 0; y < 28; y++) {

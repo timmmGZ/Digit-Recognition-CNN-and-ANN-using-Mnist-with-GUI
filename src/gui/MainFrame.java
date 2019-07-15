@@ -49,11 +49,12 @@ public class MainFrame extends JFrame {
 	private JComboBox<String> falseWordsBox;
 	public JTextArea lossTextArea = new JTextArea();
 	private JTextField trainingTimes = new JTextField("K epoches"), testingTimes = new JFormattedTextField("K times"),
-			lRate = new JTextField("0.05");
-	private JLabel predict = new JLabel("?", SwingConstants.CENTER), accuracy = new JLabel("?", SwingConstants.CENTER);
+			lRate = new JTextField("0.008");
+	public JLabel accuracy = new JLabel("?", SwingConstants.CENTER), predict = new JLabel("?", SwingConstants.CENTER);
 	private JButton clear = new JButton("Clear to be default"), train = new JButton("Train train sets"),
 			showLines = new JButton("Show lines for CNN"), test = new JButton("Test random drawing"),
-			showFalse = new JButton("Show false prediction of"), lR = new JButton("Learning rate");;
+			showFalse = new JButton("Show false prediction of"), lR = new JButton("Learning rate"),
+			clearDrawing = new JButton("Clear Drawing");
 	private JCheckBox testSet = new JCheckBox("Test test sets"), trainSet = new JCheckBox("Test train sets"),
 			cnnOrAnn = new JCheckBox("use CNN model"), testEachOnce = new JCheckBox("Test each data only once"),
 			keepBestWeights = new JCheckBox("Keep best weights each epoch"), bP = new JCheckBox("Use back Propagation"),
@@ -73,7 +74,7 @@ public class MainFrame extends JFrame {
 		setReadFilePanel();
 		info = new DataInfo();
 		info.getTrainWordNames().forEach(w -> falseSet.put(w, new ArrayList<DataSet>()));
-		drawPanel = new DrawingPanel(new ConvolutionPanel(network));
+		drawPanel = new DrawingPanel(new ConvolutionPanel(network), this);
 		trainer = new Trainer(this);
 		probPanel = new ProbabilityPanel(this, 10);
 		falseWordsBox = new JComboBox<>(info.getTrainWordNamesArray());
@@ -153,10 +154,11 @@ public class MainFrame extends JFrame {
 		panel.add(testingTimes);
 		panel.add(lR);
 		panel.add(lRate);
-		panel.add(clear);
-		panel.add(falseWordsBox);
 		panel.add(showFalse);
+		panel.add(falseWordsBox);
 		panel.add(showLines);
+		panel.add(clearDrawing);
+		panel.add(clear);
 		addWithColor(panel, drawWeights, darkBlue, null);
 		addWithColor(panel, cnnOrAnn, darkBlue, null);
 		addWithColor(panel, testSet, darkBlue, null);
@@ -177,7 +179,10 @@ public class MainFrame extends JFrame {
 		testSet.addActionListener(e -> trainSet.setSelected(true));
 		trainSet.addActionListener(e -> testSet.setSelected(true));
 		bP.addActionListener(e -> Neuron.useBP = bP.isSelected() ? true : false);
-		testEachOnce.addActionListener(e -> testingTimes.setEditable(testEachOnce.isSelected() ? false : true));
+		testEachOnce.addActionListener(e -> {
+			testingTimes.setText("1");
+			testingTimes.setEditable(testEachOnce.isSelected() ? false : true);
+		});
 		keepBestWeights.addActionListener(e -> Neuron.keepBestWeights = keepBestWeights.isSelected() ? true : false);
 		drawWeights.addActionListener(e -> {
 			drawPanel.convPanel.showWeights = drawWeights.isSelected() ? true : false;
@@ -206,6 +211,8 @@ public class MainFrame extends JFrame {
 		showLines.addActionListener(m);
 		showFalse.setActionCommand("showFalse");
 		showFalse.addActionListener(m);
+		clearDrawing.setActionCommand("clearDrawing");
+		clearDrawing.addActionListener(m);
 	}
 
 	class MyActionListener implements ActionListener {
@@ -224,6 +231,8 @@ public class MainFrame extends JFrame {
 					n.oldWeights = new double[785];
 				});
 				repaint();
+			} else if (e.getActionCommand().equals("clearDrawing")) {
+				drawPanel.clear();
 			}
 			try {
 				if (e.getActionCommand().equals("train")) {
