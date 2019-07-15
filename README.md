@@ -16,7 +16,7 @@ This program is based on Single layer Neural Network with 10 neurons using Softm
 # ANN accuray
 Random try--training only 10+ seconds(3-5 epoches), test set 92.61%, train set 93.06% (without using back propagation and keep best weights)
 ![image](https://raw.githubusercontent.com/timmmGZ/Digit-Recognition-CNN-and-ANN-using-Mnist-with-GUI/master/images/ANN3and5epochAccuracy.png)
-# CNN accuray
+# CNN accuray-- train 7 mins to 100%
 Training with 16 random designed filters without using back propagation and keep best weights, around 35 epoches is enough to reach 99% acc for train set, but it need more time to reach 100%, I randomly try like below gif, it takes 285 epoches to reach 100% acc, and too
 ![image](https://github.com/timmmGZ/Digit-Recognition-CNN-and-ANN-using-Mnist-with-GUI/blob/master/imagesUpdated/MnistCNN100Acc.gif)
 # The changing of weights 
